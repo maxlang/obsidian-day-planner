@@ -52,6 +52,7 @@ export function icalEventToTasks(
     const recurrences = icalEvent.rrule
       ?.between(startOfDay, endOfDay)
       .filter((date) => !hasRecurrenceOverride(icalEvent, date))
+      .filter((date) => !isExceptionDate(icalEvent, date))
       .map((date) => icalEventToTask(icalEvent, date));
 
     return [...recurrences, ...recurrenceOverrides];
@@ -138,4 +139,15 @@ function adjustForDst(tzid: string, originalDate: Date, currentDate: Date) {
     timezone.utcOffset(originalDate.getTime());
 
   return moment(currentDate).add(offset, "minutes");
+}
+
+function isExceptionDate(icalEvent: ical.VEvent, date: Date): boolean {
+  if (!icalEvent.exdate) {
+    return false;
+  }
+
+  const exdates = Array.isArray(icalEvent.exdate)
+    ? icalEvent.exdate
+    : [icalEvent.exdate];
+  return exdates.some((exdate) => moment(exdate).isSame(moment(date), "day"));
 }
