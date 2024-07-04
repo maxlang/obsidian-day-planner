@@ -149,5 +149,7 @@ function isExceptionDate(icalEvent: ical.VEvent, date: Date): boolean {
   const exdates = Array.isArray(icalEvent.exdate)
     ? icalEvent.exdate
     : [icalEvent.exdate];
-  return exdates.some((exdate) => moment(exdate).isSame(moment(date), "day"));
+  return Object.values(exdates).some((exdate) =>
+    moment(exdate).isSame(moment(date), "day"),
+  );
 }
