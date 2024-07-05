@@ -142,7 +142,7 @@ function adjustForDst(tzid: string, originalDate: Date, currentDate: Date) {
 }
 
 function isExceptionDate(icalEvent: ical.VEvent, date: Date): boolean {
-  if (!icalEvent.exdate) {
+  if (!icalEvent || !icalEvent.exdate) {
     return false;
   }
 
